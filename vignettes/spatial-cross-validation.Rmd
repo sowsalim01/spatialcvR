@@ -1,0 +1,322 @@
+---
+title: "Spatial Cross-Validation Methods"
+author: "Mamadou SOW"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spatial Cross-Validation Methods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Overview
+
+This vignette demonstrates the different spatial cross-validation methods available in `spatialcvR` and when to use each approach.
+
+## Available Methods
+
+`spatialcvR` implements four main spatial cross-validation methods:
+
+1. **Spatial Block CV**: Divide space into rectangular blocks
+2. **Buffered CV**: Exclude training observations within a buffer radius
+3. **Spatial Clustering CV**: Group observations spatially using clustering
+4. **Random Split**: Baseline random CV for comparison
+
+## Setup
+
+```{r}
+library(spatialcvR)
+
+# Load sample data
+data(sample_spatial_data)
+head(sample_spatial_data)
+```
+
+## Spatial Block Cross-Validation
+
+### Concept
+
+Spatial block CV divides the study area into a grid of rectangular blocks. Observations are assigned to folds based on which block they fall into. This ensures spatial separation between training and test sets.
+
+### When to Use
+
+- Data with relatively uniform spatial distribution
+- When you want to ensure geographic coverage
+- When computational efficiency is important
+- As a default spatial CV method
+
+### Basic Usage
+
+```{r}
+# Create spatial block folds
+folds_block <- spatial_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  method = "block",
+  seed = 123
+)
+
+print(folds_block)
+```
+
+### Controlling Block Size
+
+You can control the spatial resolution using either block size or number of blocks:
+
+```{r}
+# Specify block size
+folds_block_size <- spatial_block_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  block_size = c(200, 200),  # 200x200 unit blocks
+  seed = 123
+)
+
+# Specify number of blocks
+folds_n_blocks <- spatial_block_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  n_blocks = c(5, 5),  # 5x5 grid
+  seed = 123
+)
+```
+
+### Assignment Strategies
+
+Blocks can be assigned to folds using different strategies:
+
+```{r}
+# Systematic assignment (default)
+folds_systematic <- spatial_block_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  assignment = "systematic",
+  seed = 123
+)
+
+# Random assignment
+folds_random_assign <- spatial_block_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  assignment = "random",
+  seed = 123
+)
+```
+
+## Buffered Cross-Validation
+
+### Concept
+
+Buffered CV ensures that for each test observation, no training observation falls within a specified buffer radius. This provides strict control over the minimum spatial separation.
+
+### When to Use
+
+- When you need precise control over train/test distance
+- For point-based data with irregular sampling
+- When buffer distance has ecological/physical meaning
+- For conservative performance estimates
+
+### Basic Usage
+
+```{r}
+# Create buffered folds
+folds_buffer <- spatial_buffer_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  buffer_radius = 100,  # 100 unit buffer
+  seed = 123
+)
+
+print(folds_buffer)
+```
+
+### Important Notes
+
+- Buffered CV requires a **projected CRS** for accurate distance calculations
+- Using geographic coordinates (longitude/latitude) will produce approximate distances
+- Larger buffer radii reduce the size of training sets
+- This method is computationally more intensive than block CV
+
+## Spatial Clustering Cross-Validation
+
+### Concept
+
+Spatial clustering CV groups spatially proximate observations using clustering algorithms (k-means), then assigns clusters to folds. This is useful for data with complex spatial structure.
+
+### When to Use
+
+- Data with irregular or clustered spatial patterns
+- When natural spatial groupings exist
+- For heterogeneous spatial distributions
+- When block boundaries would be arbitrary
+
+### Basic Usage
+
+```{r}
+# Create clustering folds
+folds_cluster <- spatial_cluster_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  n_clusters = 10,  # Number of spatial clusters
+  seed = 123
+)
+
+print(folds_cluster)
+```
+
+### Understanding Cluster Assignment
+
+```{r}
+# Examine cluster centers
+folds_cluster$parameters$cluster_centers
+```
+
+## Random Spatial Split (Baseline)
+
+### Concept
+
+Random spatial split performs standard random k-fold cross-validation without spatial constraints. This serves as a baseline to demonstrate the impact of spatial dependence.
+
+### When to Use
+
+- As a baseline for comparison
+- When spatial dependence is minimal
+- For initial exploratory analysis
+- To demonstrate the value of spatial CV
+
+### Basic Usage
+
+```{r}
+# Create random folds
+folds_random <- spatial_split(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5,
+  seed = 123
+)
+
+print(folds_random)
+```
+
+## Choosing the Right Method
+
+### Decision Flowchart
+
+1. **Start with spatial block CV** - Good default choice
+2. **Need precise distance control?** → Use buffered CV
+3. **Complex spatial patterns?** → Use clustering CV
+4. **Compare with random CV** → Always include baseline
+
+### Method Comparison
+
+| Method | Pros | Cons | Best For |
+|--------|------|------|----------|
+| Block CV | Fast, intuitive, geographic coverage | May split natural clusters | Most cases |
+| Buffered CV | Precise distance control | Computationally intensive | Point data, strict requirements |
+| Clustering CV | Handles complex patterns | Sensitive to cluster parameters | Heterogeneous data |
+| Random CV | Fast, baseline | No spatial control | Comparison, minimal spatial dependence |
+
+## Visualizing Folds
+
+```{r}
+# Plot individual fold
+plot_spatial_folds(folds_block, sample_spatial_data, "longitude", "latitude", 
+                   fold = 1, main = "Block CV - Fold 1")
+
+# Plot all folds
+plot_spatial_folds(folds_block, sample_spatial_data, "longitude", "latitude", 
+                   fold = "all", main = "Block CV - All Folds")
+```
+
+## Practical Tips
+
+### Start Simple
+
+Begin with spatial block CV using default parameters:
+
+```{r}
+# Default spatial block CV
+folds_default <- spatial_folds(
+  data = sample_spatial_data,
+  x = "longitude",
+  y = "latitude",
+  k = 5
+)
+```
+
+### Adjust Based on Data Characteristics
+
+- **Dense data**: Use larger blocks or more clusters
+- **Sparse data**: Use smaller blocks or fewer clusters
+- **Strong spatial patterns**: Consider clustering CV
+- **Precise distance requirements**: Use buffered CV
+
+### Always Compare with Random CV
+
+```{r}
+# Compare spatial vs random
+folds_spatial <- spatial_folds(sample_spatial_data, "longitude", "latitude", 
+                               k = 5, method = "block", seed = 123)
+folds_random <- spatial_folds(sample_spatial_data, "longitude", "latitude", 
+                             k = 5, method = "random", seed = 123)
+
+# Analyze spatial leakage for both
+leakage_spatial <- detect_spatial_leakage(sample_spatial_data, folds_spatial, 
+                                           "longitude", "latitude")
+leakage_random <- detect_spatial_leakage(sample_spatial_data, folds_random, 
+                                          "longitude", "latitude")
+
+print(leakage_spatial)
+print(leakage_random)
+```
+
+## Common Issues and Solutions
+
+### Issue: Too few observations per fold
+
+**Solution**: Reduce k or use fewer blocks/clusters
+
+```{r}
+# Reduce number of folds
+folds_k3 <- spatial_folds(sample_spatial_data, "longitude", "latitude", k = 3)
+```
+
+### Issue: Uneven fold sizes
+
+**Solution**: This is normal for spatial methods; consider using stratified approaches if class imbalance is severe
+
+### Issue: Geographic gaps in training data
+
+**Solution**: Increase block size or number of clusters to improve coverage
+
+## Next Steps
+
+- Learn about [spatial leakage detection](spatial-leakage.html)
+- Explore [model evaluation and comparison](model-evaluation.html)
+
+## Key Takeaways
+
+1. **Spatial block CV** is a good default method for most cases
+2. **Buffered CV** provides precise distance control when needed
+3. **Clustering CV** handles complex spatial patterns
+4. **Always compare** with random CV to assess spatial dependence impact
+5. **Visualize folds** to understand spatial separation

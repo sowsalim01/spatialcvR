@@ -1,0 +1,33 @@
+Package: spatialcvR
+Title: Spatial Cross-Validation for Machine Learning
+Version: 0.1.0
+Authors@R: 
+    person(given = "Mamadou",
+           family = "SOW",
+           role = c("aut", "cre"),
+           email = "sowsalim01@gmail.com")
+Description: Provides tools for spatial cross-validation and model evaluation 
+    for geospatial machine learning applications. Addresses spatial dependence 
+    in observations by implementing spatial block, buffered, and clustering 
+    cross-validation methods. Includes spatial leakage detection, model 
+    performance metrics, and spatial residual diagnostics for assessing model 
+    generalization across geographic space.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports:
+    sf (>= 1.0-0),
+    terra (>= 1.5-0)
+Suggests:
+    dplyr (>= 1.0.0),
+    ggplot2 (>= 3.4.0),
+    tidymodels (>= 1.0.0),
+    rsample (>= 1.0.0),
+    testthat (>= 3.0.0),
+    knitr (>= 1.40),
+    rmarkdown (>= 2.14)
+VignetteBuilder: knitr
+URL: https://github.com/sowsalim01/spatialcvR
+BugReports: https://github.com/sowsalim01/spatialcvR/issues

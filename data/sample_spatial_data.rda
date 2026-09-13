@@ -1,0 +1,36 @@
+# Sample spatial data for demonstration and testing
+# This file contains a synthetic dataset with spatial coordinates and variables
+
+set.seed(123)
+
+# Number of observations
+n <- 200
+
+# Create spatial coordinates in a projected CRS (UTM-like)
+x_coords <- runif(n, min = 0, max = 1000)
+y_coords <- runif(n, min = 0, max = 1000)
+
+# Create variables with some spatial structure
+variable1 <- 50 + 0.05 * x_coords + rnorm(n, mean = 0, sd = 10)
+variable2 <- 30 + 0.03 * y_coords + rnorm(n, mean = 0, sd = 8)
+
+# Target variable: combination of variables with spatial autocorrelation
+target <- 10 + 0.8 * variable1 + 0.5 * variable2 + 
+          0.01 * x_coords + 0.02 * y_coords + 
+          rnorm(n, mean = 0, sd = 5)
+
+# Create data frame
+sample_spatial_data <- data.frame(
+  id = 1:n,
+  longitude = x_coords,
+  latitude = y_coords,
+  variable1 = variable1,
+  variable2 = variable2,
+  target = target
+)
+
+# Add some missing values for testing
+sample_spatial_data$variable1[sample(1:n, 5)] <- NA
+sample_spatial_data$target[sample(1:n, 3)] <- NA
+
+save(sample_spatial_data, file = "sample_spatial_data.rda")
