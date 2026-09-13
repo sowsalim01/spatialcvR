@@ -98,7 +98,7 @@ Spatial cross-validation is particularly important in:
 
 ## What spatialcvR Provides
 
-The `spatialcvR` package offers:
+The `spatialcvR` package by Mamadou SOW offers:
 
 - **Multiple spatial CV methods**: Block, buffered, clustering approaches
 - **Spatial leakage detection**: Identify risky train/test proximity
