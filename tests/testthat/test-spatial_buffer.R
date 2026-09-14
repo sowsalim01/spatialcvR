@@ -51,7 +51,7 @@ test_that("spatial_buffer_folds validates buffer_radius", {
   expect_error(
     spatial_buffer_folds(test_data, "longitude", "latitude", k = 5, buffer_radius = "invalid"),
     "must be a positive numeric value"
-  })
+  )
 })
 
 test_that("spatial_buffer_folds is reproducible with seed", {

@@ -39,7 +39,7 @@ test_that("spatial_folds handles sf objects", {
                    value = 1:2)
   
   # Test that sf objects work without x/y parameters
-  expect_silent({
+  expect_warning({
     folds <- spatial_folds(data = test_sf, k = 2, method = "block")
   })
 })

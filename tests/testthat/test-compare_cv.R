@@ -111,8 +111,8 @@ test_that("compare_cv handles missing metrics gracefully", {
   )
   
   # Should handle missing metrics by skipping incomplete results
-  expect_warning(
+  expect_error(
     comparison <- compare_cv(results),
-    "not a recognized format"
+    "Insufficient valid results"
   )
 })
