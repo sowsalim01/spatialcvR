@@ -1,5 +1,10 @@
 # Visualization functions for spatialcvR
 
+#' @importFrom grDevices colorRampPalette rainbow
+#' @importFrom graphics abline legend
+#' @importFrom stats qqnorm qqline
+NULL
+
 #' Plot Spatial Cross-Validation Folds
 #'
 #' Creates a visual representation of spatial cross-validation folds, 

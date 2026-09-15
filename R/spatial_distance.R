@@ -1,5 +1,8 @@
 # Spatial distance calculation functions
 
+#' @importFrom stats sd
+NULL
+
 #' Calculate Spatial Distances Between Train and Test Observations
 #'
 #' Computes distances between training and test observations for each fold 

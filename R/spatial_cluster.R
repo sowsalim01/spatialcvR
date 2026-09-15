@@ -1,5 +1,8 @@
 # Spatial clustering cross-validation implementation
 
+#' @importFrom stats kmeans
+NULL
+
 #' Spatial Clustering Cross-Validation
 #'
 #' Creates spatial cross-validation folds by clustering observations spatially 

@@ -1,5 +1,8 @@
 # Spatial residual diagnostics functions
 
+#' @importFrom stats sd
+NULL
+
 #' Spatial Residual Diagnostics
 #'
 #' Analyzes the spatial distribution of model residuals to detect spatial 

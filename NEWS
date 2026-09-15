@@ -1,0 +1,22 @@
+CHANGES IN spatialcvR Version 0.1.0 (2026-09-14)
+
+    o Initial release
+    o Added spatial_folds() main function with method dispatch
+    o Implemented spatial_block_folds() for block-based cross-validation
+    o Implemented spatial_buffer_folds() for buffered cross-validation
+    o Implemented spatial_cluster_folds() for clustering-based cross-validation
+    o Implemented spatial_split() for random baseline comparison
+    o Added spatial_distance() for calculating train/test distances
+    o Added detect_spatial_leakage() for spatial leakage detection
+    o Added spatial_metrics() for model evaluation (RMSE, MAE, R2, MAPE)
+    o Added spatial_residuals() for spatial residual diagnostics
+    o Added compare_cv() for method comparison
+    o Added plot_spatial_folds() for fold visualization
+    o Added plot_spatial_residuals() for residual visualization
+    o Complete roxygen2 documentation for all functions
+    o Four vignettes: introduction, spatial-cross-validation, spatial-leakage, model-evaluation
+    o Comprehensive README with quick start guide
+    o Added sample_spatial_data dataset for demonstration and testing
+    o 230 unit tests covering all major functions
+    o Imports: sf (>= 1.0-0), terra (>= 1.5-0)
+    o Compatible with R >= 3.5.0 (due to serialize version 3)

@@ -119,7 +119,7 @@ print.spatial_metrics <- function(x, ...) {
   cat("Number of observations:", x$n, "\n")
   cat("RMSE:", round(x$RMSE, 4), "\n")
   cat("MAE:", round(x$MAE, 4), "\n")
-  cat("R²:", round(x$R2, 4), "\n")
+  cat("R2:", round(x$R2, 4), "\n")
   if (!is.na(x$MAPE)) {
     cat("MAPE:", round(x$MAPE, 2), "%\n")
   } else {

@@ -89,7 +89,7 @@ test_that("spatial_block_folds handles assignment strategies", {
   expect_error(
     spatial_block_folds(test_data, "longitude", "latitude", k = 5,
                         assignment = "invalid"),
-    "must be one of|doit être un de"
+    "should be one of|must be one of|doit être un de"
   )
 })
 

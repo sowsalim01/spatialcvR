@@ -18,3 +18,10 @@
 ^lintr\.R$
 ^\.vscode$
 ^\.idea$
+^GUIDE_SOUMISSION_CRAN\.md$
+^COMPREHENSION_VALIDATION_CROISEE\.md$
+^DATASETS_POUR_TESTS\.md$
+^MANUEL_UTILISATEUR\.md$
+^data-raw$
+^NEWS\.md$
+^LICENSE\.md$

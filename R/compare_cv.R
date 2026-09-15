@@ -1,5 +1,9 @@
 # Cross-validation comparison functions
 
+#' @importFrom stats complete.cases
+#' @importFrom graphics legend
+NULL
+
 #' Compare Cross-Validation Methods
 #'
 #' Compares performance metrics across different cross-validation methods 
@@ -161,7 +165,7 @@ print.cv_comparison <- function(x, ...) {
               x$comparison$rmse_range[1], x$comparison$rmse_range[2]))
   cat(sprintf("  MAE range: [%.4f, %.4f]\n", 
               x$comparison$mae_range[1], x$comparison$mae_range[2]))
-  cat(sprintf("  R² range: [%.4f, %.4f]\n", 
+  cat(sprintf("  R2 range: [%.4f, %.4f]\n", 
               x$comparison$r2_range[1], x$comparison$r2_range[2]))
   
   invisible(x)
