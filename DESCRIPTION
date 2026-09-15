@@ -28,6 +28,6 @@ Suggests:
     knitr (>= 1.40),
     rmarkdown (>= 2.14)
 VignetteBuilder: knitr
-URL: https://github.com/sowsalim01/spatialcvR
+URL: https://sowsalim01.github.io/spatialcvR/, https://github.com/sowsalim01/spatialcvR
 BugReports: https://github.com/sowsalim01/spatialcvR/issues
 Config/roxygen2/version: 8.1.0

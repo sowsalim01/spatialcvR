@@ -74,6 +74,15 @@ reference:
     contents:
     - plot_spatial_folds
     - plot_spatial_residuals
+  - title: "Print Methods"
+    desc: "S3 print methods for spatialcvR objects"
+    contents:
+    - print.spatial_folds
+    - print.spatial_distance
+    - print.spatial_leakage_result
+    - print.spatial_metrics
+    - print.spatial_residuals
+    - print.cv_comparison
   - title: "Data"
     desc: "Sample datasets"
     contents:
