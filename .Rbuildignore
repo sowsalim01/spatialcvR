@@ -25,3 +25,5 @@
 ^data-raw$
 ^NEWS\.md$
 ^LICENSE\.md$
+^_pkgdown\.yml$
+^\.github$

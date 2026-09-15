@@ -1,0 +1,85 @@
+url: https://sowsalim01.github.io/spatialcvR/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#2C7BB6"
+    secondary: "#5BA4CF"
+    success: "#27AE60"
+    info: "#2980B9"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
+
+home:
+  title: "spatialcvR — Spatial Cross-Validation for Machine Learning"
+  description: >
+    Spatial cross-validation tools for geospatial machine learning.
+    Addresses spatial dependence in observations through block, buffered,
+    and clustering cross-validation methods.
+  links:
+  - text: GitHub Repository
+    href: https://github.com/sowsalim01/spatialcvR
+  - text: Report a Bug
+    href: https://github.com/sowsalim01/spatialcvR/issues
+
+navbar:
+  structure:
+    left: [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/sowsalim01/spatialcvR
+      aria-label: GitHub
+
+articles:
+  - title: "Getting Started"
+    navbar: ~
+    contents:
+    - introduction
+  - title: "Guides"
+    navbar: ~
+    contents:
+    - spatial-cross-validation
+    - spatial-leakage
+    - model-evaluation
+
+reference:
+  - title: "Main Interface"
+    desc: "High-level function for creating spatial folds"
+    contents:
+    - spatial_folds
+  - title: "Cross-Validation Methods"
+    desc: "Specific implementations of spatial CV methods"
+    contents:
+    - spatial_block_folds
+    - spatial_buffer_folds
+    - spatial_cluster_folds
+    - spatial_split
+  - title: "Leakage & Distances"
+    desc: "Tools for spatial leakage detection and distance analysis"
+    contents:
+    - detect_spatial_leakage
+    - spatial_distance
+  - title: "Evaluation & Diagnostics"
+    desc: "Model evaluation metrics and residual diagnostics"
+    contents:
+    - spatial_metrics
+    - spatial_residuals
+    - compare_cv
+  - title: "Visualization"
+    desc: "Plotting functions"
+    contents:
+    - plot_spatial_folds
+    - plot_spatial_residuals
+  - title: "Data"
+    desc: "Sample datasets"
+    contents:
+    - sample_spatial_data
+
+news:
+  releases:
+  - text: "Version 0.1.0"
+    href: https://github.com/sowsalim01/spatialcvR/blob/master/NEWS
