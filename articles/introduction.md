@@ -1,0 +1,214 @@
+# Introduction to Spatial Cross-Validation
+
+## Introduction
+
+Geospatial data presents unique challenges for machine learning that are
+often overlooked in traditional data science workflows. This vignette
+explains why spatial cross-validation is essential for reliable model
+evaluation when working with geographic data.
+
+## The Spatial Dependence Problem
+
+### Tobler’s First Law of Geography
+
+> “Everything is related to everything else, but near things are more
+> related than distant things.”
+
+This fundamental principle means that spatial observations are rarely
+independent. Two observations that are close in space tend to have
+similar characteristics due to:
+
+- **Environmental gradients** (elevation, temperature, precipitation)
+- **Spatial processes** (diffusion, spread, influence)
+- **Sampling design** (systematic or clustered sampling)
+- **Spatial autocorrelation** in the underlying phenomena
+
+### Why Traditional Cross-Validation Fails
+
+Standard random k-fold cross-validation assumes that observations are
+independent and identically distributed (i.i.d.). When this assumption
+is violated by spatial dependence:
+
+``` r
+
+# Example: What happens with random CV on spatial data
+set.seed(123)
+n <- 100
+x <- runif(n, 0, 100)
+y <- runif(n, 0, 100)
+z <- 10 + 0.5*x + 0.3*y + rnorm(n, 0, 2)  # Spatially structured variable
+
+# Random CV might put nearby points in both train and test
+train_idx <- sample(1:n, 80)
+test_idx <- setdiff(1:n, train_idx)
+
+# Calculate minimum distance between train and test
+distances <- numeric(length(test_idx))
+for (i in seq_along(test_idx)) {
+  distances[i] <- min(sqrt((x[test_idx[i]] - x[train_idx])^2 + 
+                          (y[test_idx[i]] - y[train_idx])^2))
+}
+min(distances)  # Often very small!
+```
+
+    ## [1] 1.506625
+
+### Consequences of Spatial Leakage
+
+When training and test observations are spatially close:
+
+1.  **Over-optimistic performance estimates**: The model sees similar
+    patterns during training and testing
+2.  **Underestimated generalization error**: True spatial generalization
+    is not measured
+3.  **Misleading model selection**: Models may be chosen based on
+    inflated performance metrics
+4.  **Poor real-world performance**: Models fail when applied to new
+    geographic areas
+
+## The Solution: Spatial Cross-Validation
+
+Spatial cross-validation methods explicitly control the separation
+between training and test observations to ensure:
+
+- **Spatial independence** between train and test sets
+- **Realistic generalization estimates** across geographic space
+- **Reliable model comparison** under spatial constraints
+- **Better understanding** of spatial model performance
+
+## When to Use Spatial Cross-Validation
+
+You should use spatial cross-validation when:
+
+- Your data has explicit spatial coordinates
+- Observations may be spatially autocorrelated
+- You need to predict in new geographic areas
+- Spatial patterns are important in your domain
+- You want conservative performance estimates
+
+## Common Applications
+
+Spatial cross-validation is particularly important in:
+
+- **Agriculture**: Crop yield prediction, soil mapping
+- **Environmental science**: Species distribution modeling, pollution
+  mapping
+- **Climatology**: Temperature and precipitation interpolation
+- **Hydrology**: Water quality prediction, flood risk assessment
+- **Forestry**: Timber volume estimation, disease detection
+- **Urban planning**: Property value prediction, crime mapping
+- **Remote sensing**: Land cover classification, biomass estimation
+- **Epidemiology**: Disease spread modeling, health risk assessment
+
+## What spatialcvR Provides
+
+The `spatialcvR` package by Mamadou SOW offers:
+
+- **Multiple spatial CV methods**: Block, buffered, clustering
+  approaches
+- **Spatial leakage detection**: Identify risky train/test proximity
+- **Model evaluation metrics**: RMSE, MAE, R², MAPE
+- **Spatial residual diagnostics**: Analyze error distribution in space
+- **Method comparison**: Compare spatial vs. random CV
+- **Flexible input**: Works with sf objects, data frames, or coordinates
+- **CRS-aware**: Proper coordinate system handling
+
+## Quick Example
+
+``` r
+
+library(spatialcvR)
+
+# Load sample data
+data(sample_spatial_data)
+
+# Create spatial folds
+folds <- spatial_folds(
+  data = sample_spatial_data,
+  x = "longitude", 
+  y = "latitude",
+  k = 5,
+  method = "block"
+)
+
+# Examine the folds
+print(folds)
+```
+
+    ## Spatial Cross-Validation Folds
+    ## ==============================
+    ## Method: spatial_block 
+    ## Number of folds: 5 
+    ## Observations: 200 
+    ## CRS: Not defined 
+    ## Has duplicate coordinates: FALSE 
+    ## 
+    ## Fold sizes:
+    ##   Fold 1: 155 train, 45 test
+    ##   Fold 2: 150 train, 50 test
+    ##   Fold 3: 150 train, 50 test
+    ##   Fold 4: 168 train, 32 test
+    ##   Fold 5: 177 train, 23 test
+
+``` r
+
+# Detect spatial leakage
+leakage <- detect_spatial_leakage(
+  data = sample_spatial_data,
+  folds = folds,
+  x = "longitude",
+  y = "latitude"
+)
+
+print(leakage)
+```
+
+    ## Spatial Leakage Detection
+    ## =========================
+    ## Method: spatial_block 
+    ## Overall Risk Level: LOW 
+    ## Distance Threshold: 53.04 
+    ## 
+    ## Summary Statistics:
+    ##   Min distance: 11.24
+    ##   Mean distance: 521.24
+    ##   Median distance: 530.91
+    ##   Proportion below threshold: 0.1%
+    ## 
+    ## Fold Analysis:
+    ##   Fold 1: LOW risk (0.1% below threshold)
+    ##   Fold 2: LOW risk (0.0% below threshold)
+    ##   Fold 3: LOW risk (0.1% below threshold)
+    ##   Fold 4: LOW risk (0.2% below threshold)
+    ##   Fold 5: LOW risk (0.1% below threshold)
+    ## 
+    ## Recommendations:
+    ##   - Spatial separation appears adequate. 
+    ##   - Current cross-validation setup should provide reliable performance estimates. 
+    ##   - Consider increasing spatial separation if you need more conservative estimates.
+
+## Next Steps
+
+- Learn about different [spatial cross-validation
+  methods](https://sowsalim01.github.io/spatialcvR/articles/spatial-cross-validation.md)
+- Understand [spatial leakage
+  detection](https://sowsalim01.github.io/spatialcvR/articles/spatial-leakage.md)
+- Explore [model evaluation and
+  comparison](https://sowsalim01.github.io/spatialcvR/articles/model-evaluation.md)
+
+## References
+
+- Brenning, A. (2012). “Spatial cross-validation and bootstrap for the
+  assessment of prediction rules in remote sensing”.
+- Roberts, D. R., et al. (2017). “Cross-validation strategies for data
+  with temporal, spatial, hierarchical, or phylogenetic structure”.
+
+## Key Takeaways
+
+1.  **Spatial dependence violates i.i.d. assumptions** in traditional
+    cross-validation
+2.  **Random CV can give misleading results** for geospatial data
+3.  **Spatial CV methods control train/test separation** for reliable
+    evaluation
+4.  **Use spatialcvR when working with geographic data** to ensure
+    robust model assessment
